@@ -1,0 +1,39 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.2.
+--
+-- see: https://github.com/sol/hpack
+
+name:           discord-bot
+version:        0.1.0.0
+description:    A Discord Bot written for my math discord sever
+homepage:       https://github.com/FayeAlephNil/discord-bot#readme
+bug-reports:    https://github.com/FayeAlephNil/discord-bot/issues
+author:         Faye Jackson
+maintainer:     justalittleepsilon@gmail.com
+copyright:      2020 Faye Jackson
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/FayeAlephNil/discord-bot
+
+executable discord-bot-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_discord_bot
+  hs-source-dirs:
+      src
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , discord-haskell
+    , hashmap
+    , text
+    , text-manipulate
+  default-language: Haskell2010
