@@ -30,8 +30,11 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    default-extensions:
+    - OverloadedStrings
     dependencies:
     - discord-haskell
     - text
     - text-manipulate
     - hashmap
+    - megaparsec
