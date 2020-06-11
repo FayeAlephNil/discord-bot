@@ -65,15 +65,15 @@ untilFix :: (Eq a) => (a -> a) -> a -> a
 untilFix f a = if f a == a then a else untilFix f (f a)
 
 flag04Remove :: Text -> Text
-flag04Remove = untilFix $ removeRegex "flag 0*4"
+flag04Remove = untilFix $ removeRegex "flag\\s+0*4"
 
 sanitize :: Text -> Text
 sanitize t = "<--" <> newtxt <> "-->"
   where
-    newtxt = flag04Remove $ removeRegex "flag 03" t 
+    newtxt = flag04Remove $ removeRegex "flag\\s+3" t 
 
 evalc :: Command
-evalc = Command $ fromEither . mapBoth (pure . textError) eval . parseExpr . T.toLower . sanitize
+evalc = Command $ fromEither . mapBoth (pure . textError) eval . parseExpr . sanitize . T.toLower
 
 checkFile :: Text -> Text
 checkFile t = fromMaybe "This is the wrong file" $ "This is the right file 9b3a163513f2da45e527a09d6c42d24f: " `T.stripPrefix` t
