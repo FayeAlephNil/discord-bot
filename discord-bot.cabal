@@ -43,5 +43,6 @@ executable discord-bot-exe
     , process
     , system-filepath
     , text
+    , text-icu
     , text-manipulate
   default-language: Haskell2010

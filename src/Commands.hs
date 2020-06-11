@@ -14,6 +14,9 @@ import Filesystem.Path.CurrentOS (fromText)
 import Data.Either.Combinators (mapBoth)
 import Data.Maybe
 
+import Data.Text.ICU (Regex)
+import qualified Data.Text.ICU as ICU
+
 import Lang
 import Parser
 
@@ -51,11 +54,23 @@ fromEither :: Either a a -> a
 fromEither (Left a) = a
 fromEither (Right a) = a
 
-sanitize :: Text -> Text
-sanitize t = "<--" <> removal t ["flag 3"] <> "-->"
+removeRegex :: Regex -> Text -> Text
+removeRegex r t = removal t matchGroups
   where
+    matchGroups = foldMap (ICU.unfold ICU.group) $ ICU.findAll r t
     removal = foldl $ flip removeOne
-    removeOne needle = T.replace needle "" 
+    removeOne needle = T.replace needle ""
+
+untilFix :: (Eq a) => (a -> a) -> a -> a
+untilFix f a = if f a == a then a else untilFix f (f a)
+
+flag04Remove :: Text -> Text
+flag04Remove = untilFix $ removeRegex "flag 0*4"
+
+sanitize :: Text -> Text
+sanitize t = "<--" <> newtxt <> "-->"
+  where
+    newtxt = flag04Remove $ removeRegex "flag 03" t 
 
 evalc :: Command
 evalc = Command $ fromEither . mapBoth (pure . textError) eval . parseExpr . T.toLower . sanitize

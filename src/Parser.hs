@@ -17,7 +17,7 @@ blockComment :: Text -> Text -> Parser Text
 blockComment start end = fmap pack $ string start >> manyTill anySingle (string end)
 
 parserFlag :: Parser Expr
-parserFlag = string "flag" >> space1 >> decimal <&> GetFlag
+parserFlag = string "flag" >> spaceChar >> decimal <&> GetFlag
 
 parserComment :: Parser Expr
 parserComment = Comment <$> blockComment "<--" "-->"

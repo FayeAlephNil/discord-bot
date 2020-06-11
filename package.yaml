@@ -41,3 +41,4 @@ executables:
     - system-filepath
     - process
     - directory
+    - text-icu
