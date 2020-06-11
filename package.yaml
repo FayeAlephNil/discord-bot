@@ -38,3 +38,5 @@ executables:
     - hashmap
     - megaparsec
     - either
+    - system-filepath
+    - process

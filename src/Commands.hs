@@ -3,11 +3,16 @@
 
 module Commands where
 
+import Prelude hiding (readFile, putStrLn)
+
 import qualified Data.HashMap as HM
 import Data.Text (Text)
 import qualified Data.Text as T
 
+import Filesystem.Path.CurrentOS (fromText)
+
 import Data.Either.Combinators (mapBoth)
+import Data.Maybe
 
 import Lang
 import Parser
@@ -26,7 +31,9 @@ commands = HM.fromList
     ("cat", (pureCommand id, "A command that copies what you say"))
   , ("help", (pureCommand help, "Outputs documentation about the bot"))
   , ("github", (txtCommand "https://github.com/FayeAlephNil/discord-bot", "Gives the bots github source code!"))
-  , ("eval", (evalc, "Evalutates code in the DSL for CTF challenges"))
+  , ("eval", (evalc, "Evaluates code in the DSL for CTF challenges"))
+  , ("ls", (Command $ ls . T.unpack, "Lists files in a directory"))
+  , ("tryfile", (tryFile, "Try a file for the second flag"))
   ]
 
 fullHelp :: Text
@@ -50,3 +57,8 @@ sanitize t = "<--" <> t <> "-->"
 evalc :: Command
 evalc = Command $ fromEither . mapBoth (pure . textError) eval . parseExpr . sanitize
 
+checkFile :: Text -> Text
+checkFile t = fromMaybe "This is the wrong file" $ "This is the right file 9b3a163513f2da45e527a09d6c42d24f: " `T.stripPrefix` t
+
+tryFile :: Command
+tryFile = Command $ fmap checkFile . readFile . T.unpack
