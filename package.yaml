@@ -40,3 +40,4 @@ executables:
     - either
     - system-filepath
     - process
+    - directory
