@@ -19,7 +19,7 @@ instance MonadCommand IO where
   readFile = TIO.readFile
   delay = threadDelay
   putStrLn = TIO.putStrLn
-  ls fp = fmap T.pack $ readProcess "/bin/ls" [fp] ""
+  ls fp = T.pack <$> readProcess "/bin/ls" (words fp) ""
 
 data Expr = GetFlag | Comment Text | Seq [Expr]
   deriving (Show, Eq, Ord)
