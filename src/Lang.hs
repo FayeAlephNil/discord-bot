@@ -25,10 +25,11 @@ instance MonadCommand IO where
   delay = threadDelay
   putStrLn = TIO.putStrLn
   ls fp = do
-    b <- doesPathExist fp
+    let nfp = if null (words fp) then ["./"] else words fp
+    b <- doesPathExist $ head nfp
     if b
-      then T.pack <$> readProcess "/bin/ls" (words fp) ""
-      else pure $ "Error: The path {" <> pack fp <> "} does not exist"
+      then T.pack <$> readProcess "/bin/ls" nfp ""
+      else pure $ "Error: The path {" <> pack (head nfp) <> "} does not exist"
 
 data Expr = GetFlag Int | Comment Text | Seq [Expr]
   deriving (Show, Eq, Ord)
