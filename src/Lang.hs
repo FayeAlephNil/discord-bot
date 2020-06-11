@@ -30,11 +30,17 @@ instance MonadCommand IO where
       then T.pack <$> readProcess "/bin/ls" (words fp) ""
       else pure $ "Error: The path {" <> pack fp <> "} does not exist"
 
-data Expr = GetFlag | Comment Text | Seq [Expr]
+data Expr = GetFlag Int | Comment Text | Seq [Expr]
   deriving (Show, Eq, Ord)
 
+zeropad :: Int -> Int -> String
+zeropad len z =
+  let txt = show z
+      offset = len - length txt
+      toadd = replicate (if offset >= 0 then offset else 0) '0'
+  in toadd <> txt
 
 eval :: (MonadCommand m) => Expr -> m Text
-eval GetFlag = readFile "./flag01.secret"
+eval (GetFlag i) = readFile $ "./flag" <> zeropad 2 i <> ".secret"
 eval (Comment t) = pure t
 eval (Seq exprs) = fmap T.concat . mapM eval $ exprs

@@ -4,9 +4,11 @@ import Lang
 
 import Text.Megaparsec
 import Text.Megaparsec.Char
+import Text.Megaparsec.Char.Lexer (decimal)
 
 import Data.Text (Text, pack)
 import Data.Void
+import Data.Functor
 
 type Parser = Parsec Void Text
 type ParserError = ParseErrorBundle Text Void
@@ -15,7 +17,7 @@ blockComment :: Text -> Text -> Parser Text
 blockComment start end = fmap pack $ string start >> manyTill anySingle (string end)
 
 parserFlag :: Parser Expr
-parserFlag = GetFlag <$ string "flag"
+parserFlag = string "flag" >> space1 >> decimal <&> GetFlag
 
 parserComment :: Parser Expr
 parserComment = Comment <$> blockComment "<--" "-->"
