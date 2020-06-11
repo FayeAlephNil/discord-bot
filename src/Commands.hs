@@ -45,17 +45,20 @@ help :: Text -> Text
 help "" = fullHelp
 help name = case name `HM.lookup` commands of
   Just (_, h) -> name <> ": " <> h
-  Nothing -> "{" <> name <> "}" <> " is not a command name"
+  Nothing -> "Error: {" <> name <> "}" <> " is not a command name"
 
 fromEither :: Either a a -> a
 fromEither (Left a) = a
 fromEither (Right a) = a
 
 sanitize :: Text -> Text
-sanitize t = "<--" <> t <> "-->"
+sanitize t = "<--" <> removal t ["flag 3"] <> "-->"
+  where
+    removal = foldl $ flip removeOne
+    removeOne needle = T.replace needle "" 
 
 evalc :: Command
-evalc = Command $ fromEither . mapBoth (pure . textError) eval . parseExpr . sanitize
+evalc = Command $ fromEither . mapBoth (pure . textError) eval . parseExpr . T.toLower . sanitize
 
 checkFile :: Text -> Text
 checkFile t = fromMaybe "This is the wrong file" $ "This is the right file 9b3a163513f2da45e527a09d6c42d24f: " `T.stripPrefix` t
