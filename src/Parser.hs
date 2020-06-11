@@ -18,7 +18,7 @@ parserFlag :: Parser Expr
 parserFlag = GetFlag <$ string "flag"
 
 parserComment :: Parser Expr
-parserComment = Comment <$> blockComment "/*" "*/"
+parserComment = Comment <$> blockComment "<--" "-->"
 
 parserSeq :: Parser [Expr]
 parserSeq = do

@@ -45,7 +45,7 @@ fromEither (Left a) = a
 fromEither (Right a) = a
 
 sanitize :: Text -> Text
-sanitize t = "/*" <> t <> "*/"
+sanitize t = "<--" <> t <> "-->"
 
 evalc :: Command
 evalc = Command $ fromEither . mapBoth (pure . textError) eval . parseExpr . sanitize
