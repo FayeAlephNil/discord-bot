@@ -1,6 +1,5 @@
 import Prelude hiding (readFile, putStrLn)
 
-
 import Data.Text (stripPrefix, Text)
 import Data.Text.Manipulate (breakWord)
 

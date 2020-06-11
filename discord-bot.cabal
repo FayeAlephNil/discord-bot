@@ -17,7 +17,6 @@ license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
-    ChangeLog.md
 
 source-repository head
   type: git
@@ -37,6 +36,7 @@ executable discord-bot-exe
   build-depends:
       base >=4.7 && <5
     , discord-haskell
+    , either
     , hashmap
     , megaparsec
     , text

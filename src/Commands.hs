@@ -7,7 +7,10 @@ import qualified Data.HashMap as HM
 import Data.Text (Text)
 import qualified Data.Text as T
 
+import Data.Either.Combinators (mapBoth)
+
 import Lang
+import Parser
 
 newtype Command = Command { unCommand :: forall m. (MonadCommand m) => Text -> m Text }
 
@@ -23,6 +26,7 @@ commands = HM.fromList
     ("cat", (pureCommand id, "A command that copies what you say"))
   , ("help", (pureCommand help, "Outputs documentation about the bot"))
   , ("github", (txtCommand "https://github.com/FayeAlephNil/discord-bot", "Gives the bots github source code!"))
+  , ("eval", (evalc, "Evalutates code in the DSL for CTF challenges"))
   ]
 
 fullHelp :: Text
@@ -35,4 +39,14 @@ help "" = fullHelp
 help name = case name `HM.lookup` commands of
   Just (_, h) -> name <> ": " <> h
   Nothing -> "{" <> name <> "}" <> " is not a command name"
+
+fromEither :: Either a a -> a
+fromEither (Left a) = a
+fromEither (Right a) = a
+
+sanitize :: Text -> Text
+sanitize t = "/*" <> t <> "*/"
+
+evalc :: Command
+evalc = Command $ fromEither . mapBoth (pure . textError) eval . parseExpr . sanitize
 

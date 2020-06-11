@@ -23,6 +23,7 @@ parserComment = Comment <$> blockComment "/*" "*/"
 parserSeq :: Parser Expr
 parserSeq = fmap Seq $ parserExpr `sepBy1` string ";"
 
+-- TODO Fix infinite loop on parseExpr ""
 parserExpr :: Parser Expr
 parserExpr = parserFlag
           <|> parserComment
@@ -31,4 +32,5 @@ parserExpr = parserFlag
 parseExpr :: Text -> Either ParserError Expr
 parseExpr = runParser (parserExpr <* eof) "User Input"
 
-
+textError :: ParserError -> Text
+textError = pack . errorBundlePretty
