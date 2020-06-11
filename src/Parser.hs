@@ -20,14 +20,18 @@ parserFlag = GetFlag <$ string "flag"
 parserComment :: Parser Expr
 parserComment = Comment <$> blockComment "/*" "*/"
 
-parserSeq :: Parser Expr
-parserSeq = fmap Seq $ parserExpr `sepBy1` string ";"
+parserSeq :: Parser [Expr]
+parserSeq = do
+  e <- parserFlag <|> parserComment
+  space
+  goon <- optional ";"
+  space
+  case goon of
+    Just _ -> fmap (e:) parserSeq
+    Nothing -> pure [e]
 
--- TODO Fix infinite loop on parseExpr ""
 parserExpr :: Parser Expr
-parserExpr = parserFlag
-          <|> parserComment
-          <|> parserSeq
+parserExpr = fmap Seq parserSeq
 
 parseExpr :: Text -> Either ParserError Expr
 parseExpr = runParser (parserExpr <* eof) "User Input"

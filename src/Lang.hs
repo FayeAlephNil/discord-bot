@@ -22,6 +22,6 @@ data Expr = GetFlag | Comment Text | Seq [Expr]
   deriving (Show, Eq, Ord)
 
 eval :: (MonadCommand m) => Expr -> m Text
-eval GetFlag = readFile "./auth-token.secret"
+eval GetFlag = readFile "./flag.secret"
 eval (Comment t) = pure t
 eval (Seq exprs) = fmap T.concat . mapM eval $ exprs
